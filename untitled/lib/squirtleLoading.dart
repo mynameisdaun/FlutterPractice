@@ -35,7 +35,7 @@ class _SquirtleLoadingState extends State<SquirtleLoading> with SingleTickerProv
     _animationController!.dispose();
     super.dispose();
   }
-
+//
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
