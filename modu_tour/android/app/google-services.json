@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "494399616766",
+    "project_id": "modutour-f13e2",
+    "storage_bucket": "modutour-f13e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494399616766:android:ef84d0874384a74be897af",
+        "android_client_info": {
+          "package_name": "com.daun.moduTour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "494399616766-uagmc8m5d0s3n9llhnhjbbt443p4f1ol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVqV7nt7HgnYHVXrSjfYPMZQ4niTcy_Jk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "494399616766-uagmc8m5d0s3n9llhnhjbbt443p4f1ol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
