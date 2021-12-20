@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'dart:convert';
+import 'package:weather_app/data/my_location.dart';
+import 'package:weather_app/data/network.dart';
+import 'package:weather_app/screens/weather_screen.dart';
+
+const weatherApiKey = "338c40aad9d27b405ace0b0392aa59cc";
 
 class Loading extends StatefulWidget {
   const Loading({Key? key}) : super(key: key);
@@ -13,10 +14,10 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
 
+
   @override
   void initState() {
     getLocation();
-    fetchData();
   }
 
   @override
@@ -38,43 +39,17 @@ class _LoadingState extends State<Loading> {
     );
   }
 
-  void getLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  Future<void> getLocation() async {
+    MyLocation myLocation = new MyLocation();
+    await myLocation.getMyCurrentLocation();
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return print('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return print('Location permissions are denied');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return print('Location permissions are permanently denied, we cannot request permissions.');
-    }
+    Network network =
+      Network('http://api.openweathermap.org/data/2.5/weather?lat=${myLocation.latitude}&lon=${myLocation.longitude}&appid=$weatherApiKey&units=metric');
 
-    Position position = await Geolocator.getCurrentPosition();
-    print(position);
-  }
-
-  void fetchData() async{
-
-    http.Response response = await http.get(Uri.parse("https://samples.openweathermap.org/data/2.5/weather?q=London&appid=b1b15e88fa797225412429c1c50c122a1"));
-    print(response.statusCode);
-
-    if(response.statusCode == 200) {
-      String jsonData = response.body;
-      var myJson = jsonDecode(jsonData)['weather'][0]['description'];
-      print(myJson);
-    }
-
+    var weatherData = await network.getJsonData();
+    print(weatherData);
+    Navigator.push(context, MaterialPageRoute(builder: (context) {return WeatherScreen(parseWeatherData: weatherData,);}));
 
   }
-
-
 
 }
