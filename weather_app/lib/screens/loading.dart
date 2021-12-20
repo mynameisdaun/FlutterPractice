@@ -13,8 +13,6 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-
-
   @override
   void initState() {
     getLocation();
@@ -25,16 +23,14 @@ class _LoadingState extends State<Loading> {
     return Scaffold(
       body: Center(
         child: RaisedButton(
-          onPressed: () {
-            getLocation();
-          },
-          child: Text(
-            'Get my location',
-            style: TextStyle(
-              color: Colors.white
+            onPressed: () {
+              getLocation();
+            },
+            child: Text(
+              'Get my location',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-        color: Colors.blue),
+            color: Colors.blue),
       ),
     );
   }
@@ -43,13 +39,27 @@ class _LoadingState extends State<Loading> {
     MyLocation myLocation = new MyLocation();
     await myLocation.getMyCurrentLocation();
 
-    Network network =
-      Network('http://api.openweathermap.org/data/2.5/weather?lat=${myLocation.latitude}&lon=${myLocation.longitude}&appid=$weatherApiKey&units=metric');
+    Network network = Network(
+        'http://api.openweathermap.org/data/2.5/weather?lat=${myLocation.latitude}&lon=${myLocation.longitude}&appid=$weatherApiKey&units=metric',
+        'http://api.openweathermap.org/data/2.5/air_pollution?lat=${myLocation.latitude}&lon=${myLocation.longitude}&appid=$weatherApiKey&units=metric');
 
     var weatherData = await network.getJsonData();
+    var airData = await network.getAirData();
+    print(
+        "==============================[WeatherDataBegin]==============================");
     print(weatherData);
-    Navigator.push(context, MaterialPageRoute(builder: (context) {return WeatherScreen(parseWeatherData: weatherData,);}));
-
+    print(
+        "==============================[WeatherDataEnd]==============================");
+    print(
+        "==============================[AirDataBegin]==============================");
+    print(airData);
+    print(
+        "==============================[AirDataEnd]==============================");
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return WeatherScreen(
+        parseWeatherData: weatherData,
+        parseAirPollutionData: airData,
+      );
+    }));
   }
-
 }

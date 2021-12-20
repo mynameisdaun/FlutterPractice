@@ -3,11 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_builder/timer_builder.dart';
+import 'package:weather_app/model/model.dart';
 
 class WeatherScreen extends StatefulWidget {
-  WeatherScreen({this.parseWeatherData});
+  WeatherScreen({this.parseWeatherData, this.parseAirPollutionData});
 
   final dynamic parseWeatherData;
+  final dynamic parseAirPollutionData;
 
   @override
   State<WeatherScreen> createState() => _WeatherScreenState();
@@ -17,11 +19,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
   String? cityName;
   int? temperature;
   var date = DateTime.now();
+  Model model = new Model();
+  Widget? weatherIcon;
+  Widget? airIcon;
+  String? description;
+  Widget? airState;
 
   @override
   void initState() {
     super.initState();
-    updateData(widget.parseWeatherData);
+    updateData(widget.parseWeatherData, widget.parseAirPollutionData);
     print(widget.parseWeatherData);
   }
 
@@ -30,8 +37,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return DateFormat("h:mm a").format(now);
   }
 
-  void updateData(dynamic weatherData) {
+  void updateData(dynamic weatherData, dynamic airData) {
+    int condition = weatherData['weather'][0]['id'].toInt();
+    int index = airData['list'][0]['main']['aqi'];
+    weatherIcon = model.getWeatherIcon(condition);
+    airIcon = model.getAirIcon(index);
+    airState = model.getAirCondition(index);
+
     setState(() {
+      description = weatherData['weather'][0]['description'];
       temperature = weatherData['main']['temp'].round();
       cityName = weatherData['name'];
     });
@@ -85,7 +99,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               height: 150.0,
                             ),
                             Text(
-                              'Seoul',
+                              '$cityName',
                               style: GoogleFonts.lato(
                                   fontSize: 35.0,
                                   fontWeight: FontWeight.bold,
@@ -118,18 +132,18 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('18\u2103',
+                            Text('$temperature\u2103',
                                 style: GoogleFonts.lato(
                                     fontSize: 85.0,
                                     fontWeight: FontWeight.w300,
                                     color: Colors.white)),
                             Row(
                               children: [
-                                SvgPicture.asset('svg/climacon-sun.svg'),
+                                weatherIcon!,
                                 SizedBox(
                                   width: 10.0,
                                 ),
-                                Text('clear sky',
+                                Text('$description',
                                     style: GoogleFonts.lato(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,
@@ -153,92 +167,69 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         children: [
                           Column(
                             children: [
-                              Text(
-                                  'AQI(대기질지수)',
+                              Text('AQI(대기질지수)',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Image.asset('image/bad.png',
-                              width: 37.0,
-                              height: 35.0,
-                              ),
+                              airIcon!,
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(
-                                  '매우나쁨',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black)
-                              ),
+                              airState!,
                             ],
                           ),
                           Column(
                             children: [
-                              Text(
-                                  '미세먼지',
+                              Text('미세먼지',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(
-                                  '174.75',
+                              Text('174.75',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(
-                                  '매우나쁨',
+                              Text('매우나쁨',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                             ],
                           ),
                           Column(
                             children: [
-                              Text(
-                                  '초미세먼지',
+                              Text('초미세먼지',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(
-                                  '84.03',
+                              Text('84.03',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(
-                                  'ug/m3',
+                              Text('ug/m3',
                                   style: GoogleFonts.lato(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white)
-                              ),
+                                      color: Colors.white)),
                             ],
                           )
                         ],
